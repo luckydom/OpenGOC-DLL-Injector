@@ -64,7 +64,7 @@ bool InjectDLL(DWORD targetProcessId, const char* dllPath)
     return true;
 }
 
-int main()
+int main_dummy()
 {
 
     const char* targetProcessPath = "C:\\Program Files (x86)\\GOG Galaxy\\Games\\Gangsters\\gangsters.exe";  // Replace with the target process path

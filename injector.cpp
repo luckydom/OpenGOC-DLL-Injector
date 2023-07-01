@@ -95,31 +95,37 @@ void InjectDLL(DWORD processId, const char* dllPath) {
     CloseHandle(hProcess);
 }
 
-int main(void) {
+int startDxWnd(void) {
     STARTUPINFOA startupInfo;
     PROCESS_INFORMATION processInfo;
-    // Create the target process in suspended state
     ZeroMemory(&startupInfo, sizeof(startupInfo));
     ZeroMemory(&processInfo, sizeof(processInfo));
     startupInfo.cb = sizeof(startupInfo);
     const char* targetProcessPath = "C:\\Program Files (x86)\\GOG Galaxy\\Games\\Gangsters\\v2_05_82_src\\build\\dxwnd.exe";  // Replace with the target process path
     const char* arguments = "/c:gangsters.dxw /r:0";
-    if (!CreateProcessA(targetProcessPath, const_cast<LPSTR>(arguments), NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo))
-    {
-        std::cout << "Failed to create the target process." << std::endl;
-        return 1;
+    if (!CreateProcessA(targetProcessPath, const_cast<LPSTR>(arguments), NULL, NULL, FALSE, 0, NULL, NULL, &startupInfo, &processInfo)) {        
+        return GetLastError();
     }
-    Sleep(10000);
-    const wchar_t* process = L"gangsters.exe";
-    int pID = getProcId(process);
+    Sleep(10000); // TODO: need a better way to detect if the process is running 
+
+    // Clean up
+    CloseHandle(processInfo.hThread);
+    CloseHandle(processInfo.hProcess);
+
+    return 0;
+}
+
+int main(void) {
+    int dxWndExitCode = startDxWnd();
+    if (dxWndExitCode != 0) {
+        std::cout << "Failed to create the target process." << std::endl;
+        return dxWndExitCode;
+    }
+    int pID = getProcId(L"gangsters.exe");
     char dll[] = "OpenGOC.dll";
     char dllPath[MAX_PATH] = { 0 };
     GetFullPathNameA(dll, MAX_PATH, dllPath, NULL);
-    // name of the process to inject into
-
-    OutputDebugStringA("Injecting DBG");
     printf("Injecting");
- 
     InjectDLL(pID, dllPath);
 
     return 0;
