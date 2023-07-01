@@ -18,5 +18,8 @@
     <ClCompile Include="injector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="before_start_injector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

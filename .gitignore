@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /OpenGOC.dll
+/dxwnd.ini
+/dxwnd.dll
